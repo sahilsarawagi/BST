@@ -80,6 +80,89 @@ class Tree
     node
   end
 
+  def find(num, node=@root)
+    return nil if node.nil?
+    if node.data>num
+    return  find(num,node.left)
+    elsif node.data<num
+    return find(num,node.right)
+    end
+    node
+  end
+
+  def level_order_itr(node=@root, &block)
+    return [] if node.nil?
+    result =[]
+    queue =[node]
+    while !queue.empty?
+    current_node = queue.shift
+    if block_given?
+      yield current_node.data
+    else
+      result << current_node.data
+    end
+    if !current_node.left.nil?
+      queue << current_node.left
+    end
+    if !current_node.right.nil?   
+      queue << current_node.right
+    end 
+    end
+    return result
+  end
+
+  def level_order_rec(node=@root,queue=[@root],result=[], &block)
+    return result if queue.empty? 
+
+    current_node = queue.shift
+    yield current_node.data if block_given?
+    result << current_node.data
+    
+    queue << current_node.left if current_node.left
+    queue << current_node.right if current_node.right
+    
+    level_order_rec(queue.first, queue, result, &block)
+    
+  end
+
+  def preorder(node=@root, &block)
+    return [] if node.nil?
+    result=[]
+    if block_given?
+      yield node.data
+    else 
+      result << node.data   
+    end
+    result +=preorder(node.left , &block) 
+    result +=preorder(node.right, &block)
+  result
+  end
+
+  def inorder(node=@root, &block)
+    return [] if node.nil?
+    result=[]
+    result +=preorder(node.left , &block) 
+    if block_given?
+      yield node.data
+    else 
+      result << node.data   
+    end
+    result +=preorder(node.right, &block)
+  result
+  end
+
+  def postorder(node=@root, &block)
+    return [] if node.nil?
+    result=[]
+    result +=preorder(node.left , &block) 
+    result +=preorder(node.right, &block)
+    if block_given?
+      yield node.data
+    else 
+      result << node.data   
+    end
+  result
+  end
   private
   def find_min(node)
     current = node
@@ -99,5 +182,36 @@ bst.pretty_print
 # bst.delete(1)
 # bst.delete(6345)
 # bst.delete(9)
-bst.delete(77)
-bst.pretty_print
+# bst.delete(77)
+# bst.pretty_print
+# ss = bst.find(99)
+# bst.preorder do |node|
+#   print "#{node} "
+# end
+# puts
+# p bst.preorder
+
+# bst.inorder do |node|
+#   print "#{node} "
+# end
+# puts
+# p bst.inorder
+
+# bst.postorder do |node|
+#   print "#{node} "
+# end
+# puts
+# p bst.postorder
+
+# bst.level_order_itr do |node|
+#   print "#{node} "
+# end
+
+# puts ""
+# p bst.level_order_itr
+
+bst.level_order_rec do |node|
+  print "#{node} "
+end
+puts 
+p bst.level_order_rec
