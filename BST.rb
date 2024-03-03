@@ -163,6 +163,45 @@ class Tree
     end
   result
   end
+
+  def height(node=@root)
+    return -1 if node.nil?
+
+    left = height(node.left) 
+    right= height(node.right) 
+    if left>=right 
+      return left +1
+    else 
+      return right +1
+    end
+  end
+
+  # def depth(given_node)
+
+  # end
+
+  def balanced?(node=@root)
+    return true if node.nil?
+    height_diff =height(node.left)-height(node.right)
+    if (height_diff).abs>=2
+      return false
+    end
+
+    left = balanced?(node.left)
+    right= balanced?(node.right)
+    left && right
+
+  end
+
+  def rebalance
+    node=@root
+    if !balanced?
+      arr = inorder
+      node = build_tree(arr.sort.uniq)
+    end
+    return @root = node
+  end
+
   private
   def find_min(node)
     current = node
@@ -174,8 +213,8 @@ class Tree
 end
 
 # bst = Tree.new([1,2,8,6,3,7,4,6,56,2,8,23,4,2,9,21,47,22,33,58,24,66,88])
-bst = Tree.new([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324,444,85,2,63,84,22,47,96,33,44,88,55,22,33,77,654,982,364])
-bst.pretty_print
+# bst = Tree.new([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324,444,85,2,63,84,22,47,96,33,44,88,55,22,33,77,654,982,364])
+# bst.pretty_print
 # bst.insert(10)
 # bst.pretty_print
 # bst.delete(67)
@@ -210,8 +249,51 @@ bst.pretty_print
 # puts ""
 # p bst.level_order_itr
 
-bst.level_order_rec do |node|
-  print "#{node} "
+# bst.level_order_rec do |node|
+#   print "#{node} "
+# end
+# puts 
+# p bst.level_order_rec
+# fo = bst.find(8)
+# p bst.height(fo)
+# p bst.height
+# p bst.depth(fo)
+# bst.insert(6666)
+# bst.insert(6667)
+# bst.delete(654)
+# bst.delete(364)
+# bst.pretty_print
+# p bst.inorder
+# p bst.balanced?
+# bst.rebalance
+# bst.pretty_print
+# p bst.balanced?
+
+
+p "Before Adding Elements"
+array = (Array.new(15) { rand(1..100) })
+tree = Tree.new(array)
+p tree.balanced?
+p tree.level_order_itr
+p tree.preorder
+p tree.inorder
+p tree.postorder
+tree.pretty_print
+
+for a in 101..125 
+  tree.insert(a)
 end
-puts 
-p bst.level_order_rec
+p "Added Element from 101 to 125"
+tree.pretty_print
+p tree.balanced?
+p "Again balancing the tree"
+tree.rebalance
+tree.pretty_print
+p "Checking if tree is balanced or not"
+p tree.balanced?
+
+p "traversing the tree"
+p tree.level_order_itr
+p tree.preorder
+p tree.inorder
+p tree.postorder
